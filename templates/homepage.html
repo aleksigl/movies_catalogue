@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<div class="row">
+   <div class="col-lg-12 text-center">
+    <img class="img-fluid" src="{{ url_for('static', filename='movies.png') }}" alt="Movie Poster">
+       <h1 class="mt-3">Witaj w swojej ulubionej bibliotece filmów!</h1>
+       <p class="lead">Znajdziesz tutaj tylko najlepsze tytuły.</p><br>
+   </div>
+    {% for movie in movies %}
+         <div class="col-lg-3 col-md-6 mb-4">
+             <div class="card h-100">
+                 <img class="card-img-top" src="http://placehold.it/300x500" alt="">
+                 <div class="card-body">
+                     <h4 class="card-title">Tytuł filmu</h4>
+                 </div>
+                 <div class="card-footer text-center">
+                     <a href="#" class="btn btn-primary mb-2">Pokaż więcej</a>
+                     <a href="{{ url_for('add_to_favourites', movie_id=movie['id']) }}" class="btn btn-primary">Dodaj do ulubionych</a>
+                 </div>
+             </div>
+         </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
