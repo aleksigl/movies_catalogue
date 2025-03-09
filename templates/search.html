@@ -19,6 +19,7 @@
                                 <h4 class="card-title text-center">{{ movie['title'] }}</h4>
                             </div>
                             <div class="card-footer text-center">
+                                <a href="{{ url_for('movie_details', movie_id=movie.id) }}" class="btn btn-primary mb-2">Pokaż więcej</a>
                                 {% if movie['id'] in session.get('favourites', []) %}
                                     <a href="{{ url_for('remove_from_favourites', movie_id=movie['id']) }}" class="btn btn-danger">Usuń z ulubionych</a>
                                 {% else %}

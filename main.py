@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import tmdb_client
+import random
 
 app = Flask(__name__)
 app.secret_key = 'brace_for_impact'
@@ -11,11 +12,13 @@ movies = tmdb_client.get_movies()
 def homepage():
     return render_template("homepage.html", movies=movies)
 
+
 @app.context_processor
 def utility_processor():
     def tmdb_image_url(path, size):
         return tmdb_client.get_poster_url(path, size)
     return {"tmdb_image_url": tmdb_image_url}
+
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -58,6 +61,30 @@ def contact():
         flash('Wiadomość została wysłana. Skontaktujemy się z Tobą wkrótce!', 'success')
         return redirect(url_for('homepage'))
     return render_template('contact.html')
+
+
+@app.route("/movie/<movie_id>")
+def movie_details(movie_id):
+    details = tmdb_client.get_single_movie(movie_id)
+    cast = tmdb_client.get_single_movie_cast(movie_id)
+    movie_images = tmdb_client.get_movie_images(movie_id)
+    selected_backdrop = random.choice(movie_images['backdrops'])
+    return render_template("movie_details.html", movie=details, cast=cast, selected_backdrop=selected_backdrop)
+
+
+@app.context_processor
+def poster_processor():
+    def tmdb_large_poster_url(path, size):
+        return tmdb_client.get_large_poster(path, size)
+    return {"tmdb_large_poster_url": tmdb_large_poster_url}
+
+
+@app.route("/movie/<movie_id>")
+def movie_cast(movie_id):
+    details = tmdb_client.get_single_movie(movie_id)
+    cast = tmdb_client.get_single_movie_cast(movie_id)
+    return render_template("movie_details.html", movie=details, cast=cast)
+
 
 
 if __name__ == '__main__':
