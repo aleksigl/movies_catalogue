@@ -1,20 +1,21 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
+import tmdb_client
 
 app = Flask(__name__)
 app.secret_key = 'brace_for_impact'
 
-movies = [
-    {'id': 1, 'title': 'Movie 1', 'image': 'movie1.jpg'},
-    {'id': 2, 'title': 'Movie 2', 'image': 'movie2.jpg'},
-    {'id': 3, 'title': 'Movie 3', 'image': 'movie3.jpg'},
-    {'id': 4, 'title': 'Movie 4', 'image': 'movie3.jpg'},
-]
+movies = tmdb_client.get_movies()
 
 
 @app.route('/')
 def homepage():
     return render_template("homepage.html", movies=movies)
 
+@app.context_processor
+def utility_processor():
+    def tmdb_image_url(path, size):
+        return tmdb_client.get_poster_url(path, size)
+    return {"tmdb_image_url": tmdb_image_url}
 
 @app.route('/search', methods=['GET'])
 def search():
