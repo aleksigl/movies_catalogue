@@ -8,6 +8,13 @@
        <h1 class="mt-3">Witaj w swojej ulubionej bibliotece filmów!</h1>
        <p class="lead">Znajdziesz tutaj tylko najlepsze tytuły.</p><br>
    </div>
+    <div class="col-lg-12 mb-5 d-flex justify-content-center" mx-5"">
+        <a href="{{ url_for('homepage', list_type='top_rated') }}" class="btn btn-outline-dark btn-custom-width mx-2">Nejlepiej oceniane</a>
+        <a href="{{ url_for('homepage', list_type='popular') }}" class="btn btn-outline-dark btn-custom-width mx-2">Na czasie</a>
+        <a href="{{ url_for('homepage', list_type='now_playing') }}" class="btn btn-outline-dark btn-custom-width mx-2">Teraz w kinach</a>
+        <a href="{{ url_for('homepage', list_type='upcoming') }}" class="btn btn-outline-dark btn-custom-width mx-2">Nadchodzące premiery</a>
+    </div>
+
     {% for movie in movies %}
          <div class="col-lg-3 col-md-6 mb-4">
              <div class="card h-100">
@@ -16,8 +23,8 @@
                      <h4 class="card-title text-center">{{ movie.title }}</h4>
                  </div>
                  <div class="card-footer text-center">
-                     <a href="{{ url_for('movie_details', movie_id=movie.id) }}" class="btn btn-info text-white mb-2">Pokaż więcej</a>
-                     <a href="{{ url_for('add_to_favourites', movie_id=movie['id']) }}" class="btn btn-info text-white">Dodaj do ulubionych</a>
+                     <a href="{{ url_for('movie_details', movie_id=movie.id) }}" class="btn btn-primary text-white mb-2">Pokaż więcej</a>
+                     <a href="{{ url_for('add_to_favourites', movie_id=movie['id']) }}" class="btn btn-dark text-white">Dodaj do ulubionych</a>
                  </div>
              </div>
          </div>
