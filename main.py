@@ -11,12 +11,13 @@ movies = tmdb_client.get_movies()
 @app.route('/')
 def homepage():
     selected_list = request.args.get('list_type', 'popular')
+    valid_list_types = ["popular", "top_rated", "upcoming", "now_playing"]
+    if selected_list not in valid_list_types:
+        selected_list = 'popular'
     movies = tmdb_client.get_movies(list_name=selected_list)
-    return render_template("homepage.html", movies=movies, current_list=selected_list)
+    return render_template("homepage.html", movies=movies, current_list=selected_list, list_types=valid_list_types)
 
-@app.route('/<list_type>')
-def homepage_chosen_list(list_type='popular'):
-    return render_template('homepage.html', list_type=list_type)
+
 @app.context_processor
 def utility_processor():
     def tmdb_image_url(path, size):
