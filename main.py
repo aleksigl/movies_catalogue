@@ -14,7 +14,9 @@ def homepage():
     movies = tmdb_client.get_movies(list_name=selected_list)
     return render_template("homepage.html", movies=movies, current_list=selected_list)
 
-
+@app.route('/<list_type>')
+def homepage_chosen_list(list_type='popular'):
+    return render_template('homepage.html', list_type=list_type)
 @app.context_processor
 def utility_processor():
     def tmdb_image_url(path, size):
