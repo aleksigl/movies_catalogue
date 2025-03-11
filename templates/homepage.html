@@ -16,8 +16,8 @@
                      <h4 class="card-title text-center">{{ movie.title }}</h4>
                  </div>
                  <div class="card-footer text-center">
-                     <a href="{{ url_for('movie_details', movie_id=movie.id) }}" class="btn btn-primary mb-2">Pokaż więcej</a>
-                     <a href="{{ url_for('add_to_favourites', movie_id=movie['id']) }}" class="btn btn-primary">Dodaj do ulubionych</a>
+                     <a href="{{ url_for('movie_details', movie_id=movie.id) }}" class="btn btn-info text-white mb-2">Pokaż więcej</a>
+                     <a href="{{ url_for('add_to_favourites', movie_id=movie['id']) }}" class="btn btn-info text-white">Dodaj do ulubionych</a>
                  </div>
              </div>
          </div>

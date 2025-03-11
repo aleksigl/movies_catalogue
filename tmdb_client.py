@@ -1,15 +1,17 @@
 import requests
 import random
+from datetime import datetime
 
 api_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYmI1OTEzYmI5OWE0MzA3YjMzMzM1ODhhNTUwZDJhMCIsIm5iZiI6MTc0MTM2NjM2Mi43NzUsInN1YiI6IjY3Y2IyNDVhZGJhMTQ5MTYwNjJiNmMwZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-CIgdFVi3K9-UrzKNpM8pq7IEDoaRyNB7kGfl_Y3LH8"
 
 
-def get_popular_movies():
-    url = "https://api.themoviedb.org/3/movie/popular"
+def get_movies_list(list_name="popular"):
+    url = f"https://api.themoviedb.org/3/movie/{list_name}"
     headers = {
         "Authorization": f"Bearer {api_token}"
     }
     results = requests.get(url, headers=headers)
+    results.raise_for_status()
     if results.status_code == 200:
         return results.json().get("results", [])
     else:
@@ -22,7 +24,7 @@ def get_poster_url(poster_api_path, size="w342"):
 
 
 def get_movie_info():
-    info = get_popular_movies()
+    info = get_movies_list(list_name="popular")
     movie_dict = {
         movie["title"]: get_poster_url(movie["poster_path"])
         for movie in info if movie.get("poster_path")
@@ -30,8 +32,8 @@ def get_movie_info():
     return movie_dict
 
 
-def get_movies():
-    data = random.sample(get_popular_movies(), 12)
+def get_movies(list_name="popular"):
+    data = random.sample(get_movies_list(list_name),12)
     return data
 
 
@@ -41,7 +43,15 @@ def get_single_movie(movie_id):
         "Authorization": f"Bearer {api_token}"
     }
     response = requests.get(endpoint, headers=headers)
-    return response.json()
+
+    if response.status_code == 200:
+        movie_data = response.json()
+        if 'release_date' in movie_data:
+            movie_data['release_date'] = datetime.strptime(movie_data['release_date'], "%Y-%m-%d").year
+        return movie_data
+    else:
+        print(f"Error fetching movie data: {response.status_code}")
+        return {}
 
 
 def get_large_poster(backdrop_path, size="w780"):

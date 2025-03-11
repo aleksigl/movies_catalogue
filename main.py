@@ -10,7 +10,9 @@ movies = tmdb_client.get_movies()
 
 @app.route('/')
 def homepage():
-    return render_template("homepage.html", movies=movies)
+    selected_list = request.args.get('list_type', 'popular')
+    movies = tmdb_client.get_movies(list_name=selected_list)
+    return render_template("homepage.html", movies=movies, current_list=selected_list)
 
 
 @app.context_processor
@@ -84,7 +86,6 @@ def movie_cast(movie_id):
     details = tmdb_client.get_single_movie(movie_id)
     cast = tmdb_client.get_single_movie_cast(movie_id)
     return render_template("movie_details.html", movie=details, cast=cast)
-
 
 
 if __name__ == '__main__':

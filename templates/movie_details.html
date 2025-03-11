@@ -18,11 +18,36 @@
            {{ movie.overview}}
        </p>
        <dl>
-           <dt>Budget</dt>
-           <dd>{{ movie.budget }}</dd>
-           <dt>Genre</dt>
-           <dd>{% for genre in movie.genres %}{{ genre.name }}, {% endfor %}</dd>
-         </dl>
+           <dt>Budget:</dt>
+           <dd data-formatter="NumFormatter">
+               {% if movie.budget %}
+               <p>{{ "{:,.2f}".format(movie.budget) }} USD</p>
+               {% else %}
+               <p>Budget unknown</p>
+               {% endif %}
+           </dd>
+           <dt>Genre:</dt>
+            <dd>
+                <ul class="ms-3">
+                    {% for genre in movie.genres %}
+                    <li>{{ genre.name }}</li>
+                    {% endfor %}
+                </ul>
+            </dd>
+           <dt>Release year:</dt>
+           <dd>
+               {{ movie.release_date }}
+           </dd>
+
+           <dt>Production country:</dt>
+           <dd>
+               <ul class="list-inline">
+                {% for country in movie.production_countries %}
+               <li class="list-inline-item" style="margin-right: 2px;">{{ country.name }} {% if not loop.last %}, {% endif %}</li>
+                {% endfor %}
+               </ul>
+           </dd>
+       </dl>
      </div>
    </div>
     <h3 class="my-4">Cast</h3>
@@ -33,11 +58,11 @@
                    <a href="#">
                        <figure class="figure">
                            {% if actor.profile_path %}
-                               <img src="{{ tmdb_image_url(actor.profile_path, 'w185') }}" class="figure-img img-fluid rounded" alt="{{ actor.name }}">
+                               <img src="{{ tmdb_image_url(actor.profile_path, 'w185') }}" class="figure-img rounded" alt="{{ actor.name }}">
                            {% else %}
-                               <img src="https://placehold.it/185x278?text= {{ actor.name }}" class="figure-img img-fluid rounded" alt="{{ actor.name }}">
+                               <img src="{{ url_for('static', filename='id.png') }}" class="img-fluid.max-width: 185px max-height: 278px rounded" alt="{{ actor.name }}">
                            {% endif %}
-                           <figcaption class="figure-caption">{{ actor.name }} as {{ actor.character }}</figcaption>
+                           <figcaption class="figure-caption text-center"><strong>{{ actor.name }}</strong><br>as {{ actor.character }}</figcaption>
                        </figure>
                    </a>
                 </div>
