@@ -33,7 +33,7 @@ def get_movie_info():
 
 
 def get_movies(list_name="popular"):
-    data = random.sample(get_movies_list(list_name),12)
+    data = random.sample(get_movies_list(list_name), 12)
     return data
 
 
@@ -81,3 +81,15 @@ def get_movie_images(movie_id):
     }
     response = requests.get(endpoint, headers=headers)
     return response.json()
+
+
+def search(search_query):
+    base_url = "https://api.themoviedb.org/3/"
+    headers = {
+       "Authorization": f"Bearer {api_token}"
+    }
+    endpoint = f"{base_url}search/movie?query={search_query}"
+
+    response = requests.get(endpoint, headers=headers)
+    response = response.json()
+    return response['results']

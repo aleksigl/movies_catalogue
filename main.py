@@ -27,8 +27,12 @@ def utility_processor():
 
 @app.route('/search', methods=['GET'])
 def search():
-    query = request.args.get('query', '')
-    return render_template('search.html', query=query, movies=movies)
+    search_query = request.args.get('q', '')
+    if search_query:
+        movies = tmdb_client.search(search_query=search_query)
+    else:
+        movies = []
+    return render_template('search.html', search_query=search_query, movies=movies)
 
 
 @app.route('/favourites')
@@ -45,6 +49,7 @@ def add_to_favourites(movie_id):
         if movie_id not in favs:
             favs.append(movie_id)
         session['favourites'] = favs
+        flash(f'Dodano film "{movie["title"]}" do ulubionych.', 'success')
     return redirect(url_for('homepage'))
 
 
