@@ -5,17 +5,24 @@ from datetime import datetime
 api_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYmI1OTEzYmI5OWE0MzA3YjMzMzM1ODhhNTUwZDJhMCIsIm5iZiI6MTc0MTM2NjM2Mi43NzUsInN1YiI6IjY3Y2IyNDVhZGJhMTQ5MTYwNjJiNmMwZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-CIgdFVi3K9-UrzKNpM8pq7IEDoaRyNB7kGfl_Y3LH8"
 
 
-def get_movies_list(list_name="popular"):
-    url = f"https://api.themoviedb.org/3/movie/{list_name}"
+def call_tmdb_api(endpoint):
+    url = f"https://api.themoviedb.org/3/{endpoint}"
     headers = {
         "Authorization": f"Bearer {api_token}"
     }
     results = requests.get(url, headers=headers)
     results.raise_for_status()
     if results.status_code == 200:
-        return results.json().get("results", [])
+        return results.json()
     else:
+        print(f"Error fetching movie data: {results.status_code}")
         return []
+
+
+def get_movies_list(list_name="popular"):
+    json_response = call_tmdb_api(f"movie/{list_name}")
+    results = json_response.get("results", [])
+    return results
 
 
 def get_poster_url(poster_api_path, size="w342"):
@@ -38,20 +45,11 @@ def get_movies(list_name="popular"):
 
 
 def get_single_movie(movie_id):
-    endpoint = f"https://api.themoviedb.org/3/movie/{movie_id}"
-    headers = {
-        "Authorization": f"Bearer {api_token}"
-    }
-    response = requests.get(endpoint, headers=headers)
-
-    if response.status_code == 200:
-        movie_data = response.json()
-        if 'release_date' in movie_data:
+    movie_data = call_tmdb_api(f"movie/{movie_id}")
+    if 'release_date' in movie_data:
+        if isinstance(movie_data['release_date'], str):
             movie_data['release_date'] = datetime.strptime(movie_data['release_date'], "%Y-%m-%d").year
-        return movie_data
-    else:
-        print(f"Error fetching movie data: {response.status_code}")
-        return {}
+    return movie_data
 
 
 def get_large_poster(backdrop_path, size="w780"):
@@ -60,18 +58,9 @@ def get_large_poster(backdrop_path, size="w780"):
 
 
 def get_single_movie_cast(movie_id):
-    endpoint = f"https://api.themoviedb.org/3/movie/{movie_id}/credits"
-    headers = {
-        "Authorization": f"Bearer {api_token}"
-    }
-    response = requests.get(endpoint, headers=headers)
-
-    if response.status_code == 200:
-        cast_data = response.json().get("cast", [])
-        return cast_data[:12]
-    else:
-        print("Error fetching cast:", response.status_code, response.text)
-        return []
+    result = call_tmdb_api(f"movie/{movie_id}/credits")
+    cast_data = result.get("cast", [])
+    return cast_data[:12]
 
 
 def get_movie_images(movie_id):
@@ -84,12 +73,5 @@ def get_movie_images(movie_id):
 
 
 def search(search_query):
-    base_url = "https://api.themoviedb.org/3/"
-    headers = {
-       "Authorization": f"Bearer {api_token}"
-    }
-    endpoint = f"{base_url}search/movie?query={search_query}"
-
-    response = requests.get(endpoint, headers=headers)
-    response = response.json()
+    response = call_tmdb_api(f"search/movie?query={search_query}")
     return response['results']
