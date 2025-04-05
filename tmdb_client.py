@@ -40,7 +40,9 @@ def get_movie_info():
 
 
 def get_movies(list_name="popular"):
-    data = random.sample(get_movies_list(list_name), 12)
+    movie_list = get_movies_list(list_name)
+    sample_size = min(12, len(movie_list))
+    data = random.sample(movie_list, sample_size)
     return data
 
 
