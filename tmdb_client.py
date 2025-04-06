@@ -2,7 +2,8 @@ import requests
 import random
 from datetime import datetime
 
-api_token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyYmI1OTEzYmI5OWE0MzA3YjMzMzM1ODhhNTUwZDJhMCIsIm5iZiI6MTc0MTM2NjM2Mi43NzUsInN1YiI6IjY3Y2IyNDVhZGJhMTQ5MTYwNjJiNmMwZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.-CIgdFVi3K9-UrzKNpM8pq7IEDoaRyNB7kGfl_Y3LH8"
+import os
+api_token = os.environ.get("TMDB_API_TOKEN")
 
 
 def call_tmdb_api(endpoint):
